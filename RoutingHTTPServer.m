@@ -95,6 +95,11 @@
 	}
 
 	[methodRoutes addObject:route];
+
+	// Define a HEAD route for all GET routes
+	if ([method isEqualToString:@"GET"]) {
+		[self addRoute:route forMethod:@"HEAD"];
+	}
 }
 
 - (Route *)routeWithPath:(NSString *)path {
