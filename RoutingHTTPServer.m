@@ -47,14 +47,6 @@
 	[defaultHeaders setObject:value forKey:field];
 }
 
-- (void)get:(NSString *)path withBlock:(RequestHandler)block {
-	[self handleMethod:@"GET" withPath:path block:block];
-}
-
-- (void)post:(NSString *)path withBlock:(RequestHandler)block {
-	[self handleMethod:@"POST" withPath:path block:block];
-}
-
 - (void)handleGet:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"GET" withPath:path block:block];
 }
