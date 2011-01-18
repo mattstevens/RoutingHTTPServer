@@ -87,6 +87,7 @@
 }
 
 - (void)addRoute:(Route *)route forMethod:(NSString *)method {
+	method = [method uppercaseString];
 	NSMutableArray *methodRoutes = [routes objectForKey:method];
 	if (methodRoutes == nil) {
 		methodRoutes = [NSMutableArray array];
