@@ -24,9 +24,9 @@
 	status = statusCode;
 }
 
-// Implement the methods required by the HTTPResponse protocol
+// Implement the required HTTPResponse methods
 - (UInt64)contentLength {
-	if ([response respondsToSelector:@selector(contentLength)]) {
+	if (response) {
 		return [response contentLength];
 	} else {
 		return 0;
@@ -34,7 +34,7 @@
 }
 
 - (UInt64)offset {
-	if ([response respondsToSelector:@selector(offset)]) {
+	if (response) {
 		return [response offset];
 	} else {
 		return 0;
@@ -42,13 +42,13 @@
 }
 
 - (void)setOffset:(UInt64)offset {
-	if ([response respondsToSelector:@selector(setOffset:)]) {
+	if (response) {
 		return [response setOffset:offset];
 	}
 }
 
 - (NSData *)readDataOfLength:(NSUInteger)length {
-	if ([response respondsToSelector:@selector(readDataOfLength:)]) {
+	if (response) {
 		return [response readDataOfLength:length];
 	} else {
 		return nil;
@@ -56,7 +56,7 @@
 }
 
 - (BOOL)isDone {
-	if ([response respondsToSelector:@selector(isDone)]) {
+	if (response) {
 		return [response isDone];
 	} else {
 		return YES;
