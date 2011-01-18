@@ -3,25 +3,42 @@
 #import "HTTPDataResponse.h"
 #import "HTTPFileResponse.h"
 #import "HTTPAsyncFileResponse.h"
+#import "HTTPResponseProxy.h"
 
 
 @implementation RouteResponse
 
 @synthesize headers;
-@synthesize response;
 
 - (id)initWithConnection:(HTTPConnection *)theConnection {
 	if (self = [super init]) {
 		connection = theConnection;
 		headers = [[NSMutableDictionary alloc] init];
+		proxy = [[HTTPResponseProxy alloc] init];
 	}
 	return self;
 }
 
 - (void)dealloc {
-	self.response = nil;
+	[proxy release];
 	[headers release];
 	[super dealloc];
+}
+
+- (NSObject <HTTPResponse>*)response {
+	return proxy;
+}
+
+- (void)setResponse:(NSObject <HTTPResponse>*)response {
+	proxy.response = response;
+}
+
+- (NSInteger)statusCode {
+	return proxy.status;
+}
+
+- (void)setStatusCode:(NSInteger)status {
+	proxy.status = status;
 }
 
 - (void)setHeader:(NSString *)field value:(NSString *)value {

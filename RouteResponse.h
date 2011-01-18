@@ -1,16 +1,18 @@
 #import <Foundation/Foundation.h>
 #import "HTTPResponse.h"
 @class HTTPConnection;
+@class HTTPResponseProxy;
 
 
 @interface RouteResponse : NSObject {
 	HTTPConnection *connection;
 	NSMutableDictionary *headers;
-	NSObject<HTTPResponse> *response;
+	HTTPResponseProxy *proxy;
 }
 
 @property (nonatomic, readonly) NSDictionary *headers;
 @property (nonatomic, retain) NSObject<HTTPResponse> *response;
+@property (nonatomic) NSInteger statusCode;
 
 - (id)initWithConnection:(HTTPConnection *)theConnection;
 - (void)setHeader:(NSString *)field value:(NSString *)value;
