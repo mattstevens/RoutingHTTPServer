@@ -34,7 +34,11 @@
 }
 
 - (NSObject <HTTPResponse>*)proxiedResponse {
-	return proxy;
+	if (proxy.response != nil || proxy.customStatus != 0 || [headers count] > 0) {
+		return proxy;
+	}
+
+	return nil;
 }
 
 - (NSInteger)statusCode {

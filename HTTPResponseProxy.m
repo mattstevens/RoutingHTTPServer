@@ -24,6 +24,10 @@
 	status = statusCode;
 }
 
+- (NSInteger)customStatus {
+	return status;
+}
+
 // Implement the required HTTPResponse methods
 - (UInt64)contentLength {
 	if (response) {

@@ -11,4 +11,6 @@
 @property (nonatomic, retain) NSObject<HTTPResponse> *response;
 @property (nonatomic) NSInteger status;
 
+- (NSInteger)customStatus;
+
 @end
