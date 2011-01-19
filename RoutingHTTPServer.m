@@ -113,9 +113,14 @@
 			}];
 
 	// Parse any :parameters in the path
-	path = [path stringByReplacingOccurrencesOfRegex:@":(\\w+)" usingBlock:
+	path = [path stringByReplacingOccurrencesOfRegex:@"(:(\\w+)|\\*)" usingBlock:
 			^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
-				[keys addObject:capturedStrings[1]];
+				if ([capturedStrings[1] isEqualToString:@"*"]) {
+					[keys addObject:@"wildcard"];
+					return @"(.*?)";
+				}
+
+				[keys addObject:capturedStrings[2]];
 				return @"([^/?#]+)";
 			}];
 
@@ -149,8 +154,21 @@
 				if ([captures count] == [route.keys count] + 1) {
 					NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
 					NSUInteger index = 1;
+					BOOL firstWildcard = YES;
 					for (NSString *key in route.keys) {
-						[newParams setObject:[captures objectAtIndex:index] forKey:key];
+						NSString *capture = [captures objectAtIndex:index];
+						if ([key isEqualToString:@"wildcard"]) {
+							NSMutableArray *wildcards = [newParams objectForKey:key];
+							if (firstWildcard) {
+								// Create a new array and replace any existing object with the same key
+								wildcards = [NSMutableArray array];
+								[newParams setObject:wildcards forKey:key];
+								firstWildcard = NO;
+							}
+							[wildcards addObject:capture];
+						} else {
+							[newParams setObject:capture forKey:key];
+						}
 						index++;
 					}
 					params = newParams;
