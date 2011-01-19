@@ -43,7 +43,7 @@
 
 - (void)setOffset:(UInt64)offset {
 	if (response) {
-		return [response setOffset:offset];
+		[response setOffset:offset];
 	}
 }
 
