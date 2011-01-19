@@ -116,7 +116,7 @@
 	path = [path stringByReplacingOccurrencesOfRegex:@"(:(\\w+)|\\*)" usingBlock:
 			^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
 				if ([capturedStrings[1] isEqualToString:@"*"]) {
-					[keys addObject:@"wildcard"];
+					[keys addObject:@"wildcards"];
 					return @"(.*?)";
 				}
 
@@ -157,7 +157,7 @@
 					BOOL firstWildcard = YES;
 					for (NSString *key in route.keys) {
 						NSString *capture = [captures objectAtIndex:index];
-						if ([key isEqualToString:@"wildcard"]) {
+						if ([key isEqualToString:@"wildcards"]) {
 							NSMutableArray *wildcards = [newParams objectForKey:key];
 							if (firstWildcard) {
 								// Create a new array and replace any existing object with the same key
