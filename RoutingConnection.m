@@ -1,6 +1,7 @@
 #import "RoutingConnection.h"
 #import "RoutingHTTPServer.h"
 #import "HTTPMessage.h"
+#import "HTTPResponseProxy.h"
 
 
 @implementation RoutingConnection
@@ -58,11 +59,17 @@
 }
 
 - (void)responseHasAvailableData:(NSObject<HTTPResponse> *)sender {
-	[super responseHasAvailableData:httpResponse];
+	HTTPResponseProxy *proxy = (HTTPResponseProxy *)httpResponse;
+	if (proxy.response == sender) {
+		[super responseHasAvailableData:httpResponse];
+	}
 }
 
 - (void)responseDidAbort:(NSObject<HTTPResponse> *)sender {
-	[super responseDidAbort:httpResponse];
+	HTTPResponseProxy *proxy = (HTTPResponseProxy *)httpResponse;
+	if (proxy.response == sender) {
+		[super responseDidAbort:httpResponse];
+	}
 }
 
 - (NSData *)preprocessResponse:(HTTPMessage *)response {
