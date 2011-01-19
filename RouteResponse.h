@@ -12,6 +12,7 @@
 
 @property (nonatomic, readonly) NSDictionary *headers;
 @property (nonatomic, retain) NSObject<HTTPResponse> *response;
+@property (nonatomic, readonly) NSObject<HTTPResponse> *proxiedResponse;
 @property (nonatomic) NSInteger statusCode;
 
 - (id)initWithConnection:(HTTPConnection *)theConnection;

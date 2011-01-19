@@ -26,11 +26,15 @@
 }
 
 - (NSObject <HTTPResponse>*)response {
-	return proxy;
+	return proxy.response;
 }
 
 - (void)setResponse:(NSObject <HTTPResponse>*)response {
 	proxy.response = response;
+}
+
+- (NSObject <HTTPResponse>*)proxiedResponse {
+	return proxy;
 }
 
 - (NSInteger)statusCode {
