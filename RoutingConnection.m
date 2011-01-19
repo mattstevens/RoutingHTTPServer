@@ -51,10 +51,18 @@
 	RouteResponse *response = [http routeMethod:method withPath:path parameters:params request:request connection:self];
 	if (response != nil) {
 		headers = [response.headers retain];
-		return response.response;
+		return response.proxiedResponse;
 	}
 
 	return [super httpResponseForMethod:method URI:path];
+}
+
+- (void)responseHasAvailableData:(NSObject<HTTPResponse> *)sender {
+	[super responseHasAvailableData:httpResponse];
+}
+
+- (void)responseDidAbort:(NSObject<HTTPResponse> *)sender {
+	[super responseDidAbort:httpResponse];
 }
 
 - (NSData *)preprocessResponse:(HTTPMessage *)response {
