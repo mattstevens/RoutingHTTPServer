@@ -106,25 +106,30 @@
 	Route *route = [[[Route alloc] init] autorelease];
 	NSMutableArray *keys = [NSMutableArray array];
 
-	// Escape regex characters
-	path = [path stringByReplacingOccurrencesOfRegex:@"[.+()]" usingBlock:
-			^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
-				return [NSString stringWithFormat:@"\\%@", capturedStrings[0]];
-			}];
+	if ([path length] > 2 && [path characterAtIndex:0] == '{') {
+		// This is a custom regular expression, just remove the {}
+		path = [path substringWithRange:NSMakeRange(1, [path length] - 2)];
+	} else {
+		// Escape regex characters
+		path = [path stringByReplacingOccurrencesOfRegex:@"[.+()]" usingBlock:
+				^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
+					return [NSString stringWithFormat:@"\\%@", capturedStrings[0]];
+				}];
 
-	// Parse any :parameters in the path
-	path = [path stringByReplacingOccurrencesOfRegex:@"(:(\\w+)|\\*)" usingBlock:
-			^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
-				if ([capturedStrings[1] isEqualToString:@"*"]) {
-					[keys addObject:@"wildcards"];
-					return @"(.*?)";
-				}
+		// Parse any :parameters in the path
+		path = [path stringByReplacingOccurrencesOfRegex:@"(:(\\w+)|\\*)" usingBlock:
+				^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
+					if ([capturedStrings[1] isEqualToString:@"*"]) {
+						[keys addObject:@"wildcards"];
+						return @"(.*?)";
+					}
 
-				[keys addObject:capturedStrings[2]];
-				return @"([^/?#]+)";
-			}];
+					[keys addObject:capturedStrings[2]];
+					return @"([^/?#]+)";
+				}];
 
-	path = [NSString stringWithFormat:@"^%@$", path];
+		path = [NSString stringWithFormat:@"^%@$", path];
+	}
 
 	route.path = path;
 	if ([keys count] > 0) {
@@ -173,6 +178,11 @@
 					}
 					params = newParams;
 				}
+			} else if ([captures count] > 1) {
+				// For custom regular expressions place the anonymous captures in the captures parameter
+				NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
+				[newParams setObject:[captures subarrayWithRange:NSMakeRange(1, [captures count] - 1)] forKey:@"captures"];
+				params = newParams;
 			}
 
 			RouteRequest *request = [[[RouteRequest alloc] initWithHTTPMessage:httpMessage parameters:params] autorelease];
