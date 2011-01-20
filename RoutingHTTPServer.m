@@ -125,7 +125,7 @@
 					}
 
 					[keys addObject:capturedStrings[2]];
-					return @"([^/?#]+)";
+					return @"([^/]+)";
 				}];
 
 		path = [NSString stringWithFormat:@"^%@$", path];
