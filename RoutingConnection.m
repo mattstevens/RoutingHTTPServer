@@ -72,12 +72,12 @@
 	}
 }
 
-- (NSData *)preprocessResponse:(HTTPMessage *)response {
+- (void)setHeadersForResponse:(HTTPMessage *)response isError:(BOOL)isError {
 	[http.defaultHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
 		[response setHeaderField:field value:value];
 	}];
 
-	if (headers) {
+	if (headers && !isError) {
 		[headers enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
 			[response setHeaderField:field value:value];
 		}];
@@ -89,8 +89,16 @@
 		connection = [self shouldDie] ? @"close" : @"keep-alive";
 		[response setHeaderField:@"Connection" value:connection];
 	}
+}
 
+- (NSData *)preprocessResponse:(HTTPMessage *)response {
+	[self setHeadersForResponse:response isError:NO];
 	return [super preprocessResponse:response];
+}
+
+- (NSData *)preprocessErrorResponse:(HTTPMessage *)response {
+	[self setHeadersForResponse:response isError:YES];
+	return [super preprocessErrorResponse:response];
 }
 
 @end
