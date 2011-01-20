@@ -65,6 +65,10 @@
 	self.response = [[[HTTPDataResponse alloc] initWithData:data] autorelease];
 }
 
+- (void)respondWithFile:(NSString *)path {
+	[self respondWithFile:path async:NO];
+}
+
 - (void)respondWithFile:(NSString *)path async:(BOOL)async {
 	if (async) {
 		self.response = [[[HTTPAsyncFileResponse alloc] initWithFilePath:path forConnection:connection] autorelease];
