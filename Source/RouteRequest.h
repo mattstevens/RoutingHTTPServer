@@ -3,14 +3,16 @@
 
 
 @interface RouteRequest : NSObject {
-	NSDictionary *parameters;
+	NSDictionary *params;
 	HTTPMessage *message;
 }
 
-@property (nonatomic, readonly) NSDictionary *parameters;
+@property (nonatomic, readonly) NSDictionary *headers;
+@property (nonatomic, readonly) NSDictionary *params;
 
 - (id)initWithHTTPMessage:(HTTPMessage *)msg parameters:(NSDictionary *)params;
-- (NSString *)valueForHeader:(NSString *)field;
+- (NSString *)header:(NSString *)field;
+- (id)param:(NSString *)name;
 - (NSString *)method;
 - (NSURL *)url;
 - (NSData *)body;

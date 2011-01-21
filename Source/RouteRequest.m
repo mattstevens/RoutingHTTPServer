@@ -4,18 +4,18 @@
 
 @implementation RouteRequest
 
-@synthesize parameters;
+@synthesize params;
 
-- (id)initWithHTTPMessage:(HTTPMessage *)msg parameters:(NSDictionary *)params {
+- (id)initWithHTTPMessage:(HTTPMessage *)msg parameters:(NSDictionary *)parameters {
 	if (self = [super init]) {
-		parameters = [params retain];
+		params = [parameters retain];
 		message = [msg retain];
 	}
 	return self;
 }
 
 - (void)dealloc {
-	[parameters release];
+	[params release];
 	[message release];
 	[super dealloc];
 }
@@ -24,8 +24,12 @@
 	return [message allHeaderFields];
 }
 
-- (NSString *)valueForHeader:(NSString *)field {
+- (NSString *)header:(NSString *)field {
 	return [message headerField:field];
+}
+
+- (id)param:(NSString *)name {
+	return [params objectForKey:name];
 }
 
 - (NSString *)method {
