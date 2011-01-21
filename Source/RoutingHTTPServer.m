@@ -149,51 +149,52 @@
 		return nil;
 
 	for (Route *route in methodRoutes) {
-		// The first element in the captures array is all of the text matched by regex.
+		// The first element in the captures array is all of the text matched by the regex.
 		// If there is nothing in the array the regex did not match.
 		NSArray *captures = [path captureComponentsMatchedByRegex:route.path];
-		if ([captures count] > 0) {
-			if (route.keys) {
-				// Add the route's parameters to the parameter dictionary, accounting for
-				// the first element containing the matched text.
-				if ([captures count] == [route.keys count] + 1) {
-					NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
-					NSUInteger index = 1;
-					BOOL firstWildcard = YES;
-					for (NSString *key in route.keys) {
-						NSString *capture = [captures objectAtIndex:index];
-						if ([key isEqualToString:@"wildcards"]) {
-							NSMutableArray *wildcards = [newParams objectForKey:key];
-							if (firstWildcard) {
-								// Create a new array and replace any existing object with the same key
-								wildcards = [NSMutableArray array];
-								[newParams setObject:wildcards forKey:key];
-								firstWildcard = NO;
-							}
-							[wildcards addObject:capture];
-						} else {
-							[newParams setObject:capture forKey:key];
-						}
-						index++;
-					}
-					params = newParams;
-				}
-			} else if ([captures count] > 1) {
-				// For custom regular expressions place the anonymous captures in the captures parameter
+		if ([captures count] < 1)
+			continue;
+
+		if (route.keys) {
+			// Add the route's parameters to the parameter dictionary, accounting for
+			// the first element containing the matched text.
+			if ([captures count] == [route.keys count] + 1) {
 				NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
-				[newParams setObject:[captures subarrayWithRange:NSMakeRange(1, [captures count] - 1)] forKey:@"captures"];
+				NSUInteger index = 1;
+				BOOL firstWildcard = YES;
+				for (NSString *key in route.keys) {
+					NSString *capture = [captures objectAtIndex:index];
+					if ([key isEqualToString:@"wildcards"]) {
+						NSMutableArray *wildcards = [newParams objectForKey:key];
+						if (firstWildcard) {
+							// Create a new array and replace any existing object with the same key
+							wildcards = [NSMutableArray array];
+							[newParams setObject:wildcards forKey:key];
+							firstWildcard = NO;
+						}
+						[wildcards addObject:capture];
+					} else {
+						[newParams setObject:capture forKey:key];
+					}
+					index++;
+				}
 				params = newParams;
 			}
-
-			RouteRequest *request = [[[RouteRequest alloc] initWithHTTPMessage:httpMessage parameters:params] autorelease];
-			RouteResponse *response = [[[RouteResponse alloc] initWithConnection:connection] autorelease];
-			if (route.handler) {
-				route.handler(request, response);
-			} else {
-				[route.target performSelector:route.selector withObject:request withObject:response];
-			}
-			return response;
+		} else if ([captures count] > 1) {
+			// For custom regular expressions place the anonymous captures in the captures parameter
+			NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
+			[newParams setObject:[captures subarrayWithRange:NSMakeRange(1, [captures count] - 1)] forKey:@"captures"];
+			params = newParams;
 		}
+
+		RouteRequest *request = [[[RouteRequest alloc] initWithHTTPMessage:httpMessage parameters:params] autorelease];
+		RouteResponse *response = [[[RouteResponse alloc] initWithConnection:connection] autorelease];
+		if (route.handler) {
+			route.handler(request, response);
+		} else {
+			[route.target performSelector:route.selector withObject:request withObject:response];
+		}
+		return response;
 	}
 
 	return nil;
