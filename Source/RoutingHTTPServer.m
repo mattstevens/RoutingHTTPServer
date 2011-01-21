@@ -24,6 +24,9 @@
 }
 
 - (void)dealloc {
+	if (routeQueue)
+		dispatch_release(routeQueue);
+
 	[routes release];
 	[defaultHeaders release];
 	[super dealloc];
@@ -45,6 +48,20 @@
 
 - (void)setDefaultHeader:(NSString *)field value:(NSString *)value {
 	[defaultHeaders setObject:value forKey:field];
+}
+
+- (dispatch_queue_t)routeQueue {
+	return routeQueue;
+}
+
+- (void)setRouteQueue:(dispatch_queue_t)queue {
+	if (queue)
+		dispatch_retain(queue);
+
+	if (routeQueue)
+		dispatch_release(routeQueue);
+
+	routeQueue = queue;
 }
 
 - (void)handleGet:(NSString *)path withBlock:(RequestHandler)block {
@@ -143,6 +160,14 @@
 	return ([routes objectForKey:method] != nil);
 }
 
+- (void)handleRoute:(Route *)route withRequest:(RouteRequest *)request response:(RouteResponse *)response {
+	if (route.handler) {
+		route.handler(request, response);
+	} else {
+		[route.target performSelector:route.selector withObject:request withObject:response];
+	}
+}
+
 - (RouteResponse *)routeMethod:(NSString *)method withPath:(NSString *)path parameters:(NSDictionary *)params request:(HTTPMessage *)httpMessage connection:(HTTPConnection *)connection {
 	NSMutableArray *methodRoutes = [routes objectForKey:method];
 	if (methodRoutes == nil)
@@ -189,10 +214,14 @@
 
 		RouteRequest *request = [[[RouteRequest alloc] initWithHTTPMessage:httpMessage parameters:params] autorelease];
 		RouteResponse *response = [[[RouteResponse alloc] initWithConnection:connection] autorelease];
-		if (route.handler) {
-			route.handler(request, response);
+		if (!routeQueue) {
+			[self handleRoute:route withRequest:request response:response];
 		} else {
-			[route.target performSelector:route.selector withObject:request withObject:response];
+			// Process the route on the specified queue
+			__block RoutingHTTPServer *blockSelf = self;
+			dispatch_sync(routeQueue, ^{
+				[blockSelf handleRoute:route withRequest:request response:response];
+			});
 		}
 		return response;
 	}

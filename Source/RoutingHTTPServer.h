@@ -7,14 +7,24 @@
 @interface RoutingHTTPServer : HTTPServer {
 	NSMutableDictionary *routes;
 	NSMutableDictionary *defaultHeaders;
+	dispatch_queue_t routeQueue;
 }
 
 typedef void (^RequestHandler)(RouteRequest *request, RouteResponse *response);
 
 @property (nonatomic, readonly) NSDictionary *defaultHeaders;
 
+// Specifies headers that will be set on every response.
+// These headers can be overridden by RouteResponses.
 - (void)setDefaultHeaders:(NSDictionary *)headers;
 - (void)setDefaultHeader:(NSString *)field value:(NSString *)value;
+
+// Returns the dispatch queue on which routes are processed.
+// By default this is NULL and routes are processed on CocoaHTTPServer's
+// connection queue. You can specify a queue to process routes on, such as
+// dispatch_get_main_queue() to process all routes on the main thread.
+- (dispatch_queue_t)routeQueue;
+- (void)setRouteQueue:(dispatch_queue_t)queue;
 
 // Convenience methods. Yes I know, this is Cocoa and we don't use convenience
 // methods because typing lengthy primitives over and over and over again is
