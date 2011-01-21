@@ -8,11 +8,8 @@
 
 - (id)initWithAsyncSocket:(GCDAsyncSocket *)newSocket configuration:(HTTPConfig *)aConfig {
 	if (self = [super initWithAsyncSocket:newSocket configuration:aConfig]) {
-		if (![config.server isKindOfClass:[RoutingHTTPServer class]]) {
-			// Woah, badness
-			// TODO: Log
-			return self;
-		}
+		NSAssert([config.server isKindOfClass:[RoutingHTTPServer class]],
+				 @"A RoutingConnection is being used with a server that is not a RoutingHTTPServer");
 
 		http = (RoutingHTTPServer *)config.server;
 	}
