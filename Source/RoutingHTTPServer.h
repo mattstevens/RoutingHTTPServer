@@ -29,12 +29,12 @@ typedef void (^RequestHandler)(RouteRequest *request, RouteResponse *response);
 // Convenience methods. Yes I know, this is Cocoa and we don't use convenience
 // methods because typing lengthy primitives over and over and over again is
 // elegant with the beauty and the poetry. These are just, you know, here.
-- (void)handleGet:(NSString *)path withBlock:(RequestHandler)block;
-- (void)handlePost:(NSString *)path withBlock:(RequestHandler)block;
-- (void)handlePut:(NSString *)path withBlock:(RequestHandler)block;
-- (void)handleDelete:(NSString *)path withBlock:(RequestHandler)block;
-- (void)handleSubscribe:(NSString *)path withBlock:(RequestHandler)block;
-- (void)handleUnsubscribe:(NSString *)path withBlock:(RequestHandler)block;
+- (void)get:(NSString *)path withBlock:(RequestHandler)block;
+- (void)post:(NSString *)path withBlock:(RequestHandler)block;
+- (void)put:(NSString *)path withBlock:(RequestHandler)block;
+- (void)delete:(NSString *)path withBlock:(RequestHandler)block;
+- (void)subscribe:(NSString *)path withBlock:(RequestHandler)block;
+- (void)unsubscribe:(NSString *)path withBlock:(RequestHandler)block;
 
 - (void)handleMethod:(NSString *)method withPath:(NSString *)path block:(RequestHandler)block;
 - (void)handleMethod:(NSString *)method withPath:(NSString *)path target:(id)target selector:(SEL)selector;

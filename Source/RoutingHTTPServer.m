@@ -64,27 +64,27 @@
 	routeQueue = queue;
 }
 
-- (void)handleGet:(NSString *)path withBlock:(RequestHandler)block {
+- (void)get:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"GET" withPath:path block:block];
 }
 
-- (void)handlePost:(NSString *)path withBlock:(RequestHandler)block {
+- (void)post:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"POST" withPath:path block:block];
 }
 
-- (void)handlePut:(NSString *)path withBlock:(RequestHandler)block {
+- (void)put:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"PUT" withPath:path block:block];
 }
 
-- (void)handleDelete:(NSString *)path withBlock:(RequestHandler)block {
+- (void)delete:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"DELETE" withPath:path block:block];
 }
 
-- (void)handleSubscribe:(NSString *)path withBlock:(RequestHandler)block {
+- (void)subscribe:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"SUBSCRIBE" withPath:path block:block];
 }
 
-- (void)handleUnsubscribe:(NSString *)path withBlock:(RequestHandler)block {
+- (void)unsubscribe:(NSString *)path withBlock:(RequestHandler)block {
 	[self handleMethod:@"UNSUBSCRIBE" withPath:path block:block];
 }
 
