@@ -98,4 +98,22 @@
 	return [super preprocessErrorResponse:response];
 }
 
+- (BOOL)shouldDie {
+	__block BOOL shouldDie = [super shouldDie];
+
+	// Allow custom headers to determine if the connection should be closed
+	if (!shouldDie && headers) {
+		[headers enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL *stop) {
+			if ([field caseInsensitiveCompare:@"connection"] == NSOrderedSame) {
+				if ([value caseInsensitiveCompare:@"close"] == NSOrderedSame) {
+					shouldDie = YES;
+				}
+				*stop = YES;
+			}
+		}];
+	}
+
+	return shouldDie;
+}
+
 @end
