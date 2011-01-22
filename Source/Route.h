@@ -11,9 +11,9 @@
 }
 
 @property (nonatomic, retain) NSString *path;
-@property (nonatomic, assign) RequestHandler handler;
+@property (nonatomic, copy) RequestHandler handler;
 @property (nonatomic, assign) id target;
-@property (nonatomic) SEL selector;
+@property (nonatomic, assign) SEL selector;
 @property (nonatomic, retain) NSArray *keys;
 
 @end

@@ -16,14 +16,4 @@
 	[super dealloc];
 }
 
-- (void)setHandler:(RequestHandler)newHandler {
-	if (newHandler)
-		newHandler = Block_copy(newHandler);
-
-	if (handler)
-		Block_release(handler);
-
-	handler = newHandler;
-}
-
 @end
