@@ -220,7 +220,9 @@
 			// Process the route on the specified queue
 			__block RoutingHTTPServer *blockSelf = self;
 			dispatch_sync(routeQueue, ^{
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				[blockSelf handleRoute:route withRequest:request response:response];
+				[pool drain];
 			});
 		}
 		return response;
