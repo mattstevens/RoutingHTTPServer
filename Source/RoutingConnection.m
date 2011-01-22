@@ -16,6 +16,11 @@
 	return self;
 }
 
+- (void)dealloc {
+	[headers release];
+	[super dealloc];
+}
+
 - (BOOL)supportsMethod:(NSString *)method atPath:(NSString *)path {
 
 	if ([http supportsMethod:method])
