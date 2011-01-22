@@ -1,4 +1,4 @@
-## RoutingHTTPServer
+# RoutingHTTPServer
 
 Adds a Sinatra-inspired routing API on top of [CocoaHTTPServer](http://code.google.com/p/cocoahttpserver/).
 
