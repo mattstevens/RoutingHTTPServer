@@ -23,7 +23,7 @@ Convenience methods are available for GET/POST/PUT/DELETE:
 
     [http get:@"/hello/:name" withBlock:^(RouteRequest *request, RouteResponse *response) {
         [response setHeader:@"Content-Type" value:@"text/plain"];
-        [response respondWithString:[NSString stringWithFormat:@"Hello %@!", [request param:@"name"]];
+        [response respondWithString:[NSString stringWithFormat:@"Hello %@!", [request param:@"name"]]];
     }];
 
 Note that in this example the path is `/hello/:name`, this will match `/hello/world`, `/hello/you`, and so forth. The named parameters in the path are added to the params dictionary in the request object. Query parameters are also included in this dictionary.
