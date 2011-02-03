@@ -36,7 +36,7 @@ Paths can use wildcards:
 
 Or your own regular expressions by wrapping the string in braces:
 
-    [http get:@"{^/page/(\d+)}" withBlock:^(RouteRequest *request, RouteResponse *response) {
+    [http get:@"{^/page/(\\d+)}" withBlock:^(RouteRequest *request, RouteResponse *response) {
         // The "captures" parameter is an NSArray of capture groups
     }];
 
