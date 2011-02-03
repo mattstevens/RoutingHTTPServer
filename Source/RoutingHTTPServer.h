@@ -7,6 +7,7 @@
 @interface RoutingHTTPServer : HTTPServer {
 	NSMutableDictionary *routes;
 	NSMutableDictionary *defaultHeaders;
+	NSMutableDictionary *mimeTypes;
 	dispatch_queue_t routeQueue;
 }
 
@@ -25,6 +26,11 @@ typedef void (^RequestHandler)(RouteRequest *request, RouteResponse *response);
 // dispatch_get_main_queue() to process all routes on the main thread.
 - (dispatch_queue_t)routeQueue;
 - (void)setRouteQueue:(dispatch_queue_t)queue;
+
+- (NSDictionary *)mimeTypes;
+- (void)setMIMETypes:(NSDictionary *)types;
+- (void)setMIMEType:(NSString *)type forExtension:(NSString *)ext;
+- (NSString *)mimeTypeForPath:(NSString *)path;
 
 // Convenience methods. Yes I know, this is Cocoa and we don't use convenience
 // methods because typing lengthy primitives over and over and over again is

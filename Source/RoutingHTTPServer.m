@@ -7,6 +7,7 @@
 
 - (Route *)routeWithPath:(NSString *)path;
 - (void)addRoute:(Route *)route forMethod:(NSString *)method;
+- (void)setupMIMETypes;
 
 @end
 
@@ -19,6 +20,7 @@
 		connectionClass = [RoutingConnection self];
 		routes = [[NSMutableDictionary alloc] init];
 		defaultHeaders = [[NSMutableDictionary alloc] init];
+		[self setupMIMETypes];
 	}
 	return self;
 }
@@ -29,6 +31,7 @@
 
 	[routes release];
 	[defaultHeaders release];
+	[mimeTypes release];
 	[super dealloc];
 }
 
@@ -62,6 +65,34 @@
 		dispatch_release(routeQueue);
 
 	routeQueue = queue;
+}
+
+- (NSDictionary *)mimeTypes {
+	return mimeTypes;
+}
+
+- (void)setMIMETypes:(NSDictionary *)types {
+	NSMutableDictionary *newTypes;
+	if (types) {
+		newTypes = [types mutableCopy];
+	} else {
+		newTypes = [[NSMutableDictionary alloc] init];
+	}
+
+	[mimeTypes release];
+	mimeTypes = newTypes;
+}
+
+- (void)setMIMEType:(NSString *)theType forExtension:(NSString *)ext {
+	[mimeTypes setObject:theType forKey:ext];
+}
+
+- (NSString *)mimeTypeForPath:(NSString *)path {
+	NSString *ext = [[path pathExtension] lowercaseString];
+	if (!ext || [ext length] < 1)
+		return nil;
+
+	return [mimeTypes objectForKey:ext];
 }
 
 - (void)get:(NSString *)path withBlock:(RequestHandler)block {
@@ -229,6 +260,26 @@
 	}
 
 	return nil;
+}
+
+- (void)setupMIMETypes {
+	mimeTypes = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+				 @"application/x-javascript",   @"js",
+				 @"image/gif",                  @"gif",
+				 @"image/jpeg",                 @"jpg",
+				 @"image/jpeg",                 @"jpeg",
+				 @"image/png",                  @"png",
+				 @"image/svg+xml",              @"svg",
+				 @"image/tiff",                 @"tif",
+				 @"image/tiff",                 @"tiff",
+				 @"image/x-icon",               @"ico",
+				 @"image/x-ms-bmp",             @"bmp",
+				 @"text/css",                   @"css",
+				 @"text/html",                  @"html",
+				 @"text/html",                  @"htm",
+				 @"text/plain",                 @"txt",
+				 @"text/xml",                   @"xml",
+				 nil];
 }
 
 @end

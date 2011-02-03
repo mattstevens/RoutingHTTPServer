@@ -57,7 +57,15 @@
 		return response.proxiedResponse;
 	}
 
-	return [super httpResponseForMethod:method URI:path];
+	// Set a MIME type for static files if possible
+	NSObject<HTTPResponse> *staticResponse = [super httpResponseForMethod:method URI:path];
+	if (staticResponse && [staticResponse respondsToSelector:@selector(filePath)]) {
+		NSString *mimeType = [http mimeTypeForPath:[staticResponse performSelector:@selector(filePath)]];
+		if (mimeType) {
+			headers = [[NSDictionary dictionaryWithObject:mimeType forKey:@"Content-Type"] retain];
+		}
+	}
+	return staticResponse;
 }
 
 - (void)responseHasAvailableData:(NSObject<HTTPResponse> *)sender {
