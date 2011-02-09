@@ -8,6 +8,7 @@
 
 @implementation RouteResponse
 
+@synthesize connection;
 @synthesize headers;
 
 - (id)initWithConnection:(HTTPConnection *)theConnection {
