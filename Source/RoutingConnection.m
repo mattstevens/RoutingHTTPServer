@@ -29,6 +29,15 @@
 	return [super supportsMethod:method atPath:path];
 }
 
+- (BOOL)shouldHandleRequestForMethod:(NSString *)method atPath:(NSString *)path {
+	// The default implementation is strict about the use of Content-Length. Either
+	// a given method + path combination must *always* include data or *never*
+	// include data. The routing connection is lenient, a POST that sometimes does
+	// not include data or a GET that sometimes does is fine. It is up to the route
+	// implementations to decide how to handle these situations.
+	return YES;
+}
+
 - (void)processDataChunk:(NSData *)postDataChunk {
 	BOOL result = [request appendData:postDataChunk];
 	if (!result) {
