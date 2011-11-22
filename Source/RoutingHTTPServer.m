@@ -1,7 +1,6 @@
 #import "RoutingHTTPServer.h"
 #import "RoutingConnection.h"
 #import "Route.h"
-#import "RegexKitLite.h"
 
 @interface RoutingHTTPServer ()
 
@@ -158,25 +157,41 @@
 		// This is a custom regular expression, just remove the {}
 		path = [path substringWithRange:NSMakeRange(1, [path length] - 2)];
 	} else {
+		NSRegularExpression *regex = nil;
+
 		// Escape regex characters
-		path = [path stringByReplacingOccurrencesOfRegex:@"[.+()]" usingBlock:
-				^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
-					return [NSString stringWithFormat:@"\\%@", capturedStrings[0]];
-				}];
+		regex = [NSRegularExpression regularExpressionWithPattern:@"[.+()]" options:0 error:nil];
+		path = [regex stringByReplacingMatchesInString:path options:0 range:NSMakeRange(0, path.length) withTemplate:@"\\\\$0"];
 
-		// Parse any :parameters in the path
-		path = [path stringByReplacingOccurrencesOfRegex:@"(:(\\w+)|\\*)" usingBlock:
-				^NSString *(NSInteger captureCount, NSString *const capturedStrings[captureCount], const NSRange capturedRanges[captureCount], volatile BOOL *const stop) {
-					if ([capturedStrings[1] isEqualToString:@"*"]) {
+		// Parse any :parameters and * in the path
+		regex = [NSRegularExpression regularExpressionWithPattern:@"(:(\\w+)|\\*)"
+														  options:0
+															error:nil];
+		NSMutableString *path_ = [NSMutableString stringWithString:path];
+		__block NSInteger diff = 0;
+		[regex enumerateMatchesInString:path options:NSMatchingReportCompletion range:NSMakeRange(0, path.length)
+			usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+				if (result != nil && *stop != YES) {
+					NSString *capturedString = [path substringWithRange:result.range];
+					if ([capturedString isEqualToString:@"*"]) {
 						[keys addObject:@"wildcards"];
-						return @"(.*?)";
+						NSRange capturedRange = NSMakeRange(diff + result.range.location, result.range.length);
+						NSString *replacementString = @"(.*?)";
+						[path_ replaceCharactersInRange:capturedRange withString:replacementString];
+						diff += replacementString.length - result.range.length;
 					}
+					else {
+						NSString *keyString = [path substringWithRange:NSMakeRange(result.range.location + 1, result.range.length - 1)];
+						[keys addObject:keyString];
+						NSRange capturedRange = NSMakeRange(diff + result.range.location, result.range.length);
+						NSString *replacementString = @"([^/]+)";
+						[path_ replaceCharactersInRange:capturedRange withString:replacementString];
+						diff += replacementString.length - result.range.length;
+					}
+				}
+			}];
 
-					[keys addObject:capturedStrings[2]];
-					return @"([^/]+)";
-				}];
-
-		path = [NSString stringWithFormat:@"^%@$", path];
+		path = [NSString stringWithFormat:@"^%@$", path_];
 	}
 
 	route.path = path;
@@ -207,7 +222,16 @@
 	for (Route *route in methodRoutes) {
 		// The first element in the captures array is all of the text matched by the regex.
 		// If there is nothing in the array the regex did not match.
-		NSArray *captures = [path captureComponentsMatchedByRegex:route.path];
+		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:route.path options:NSRegularExpressionCaseInsensitive error:nil];
+		NSMutableArray *captures = [NSMutableArray array];
+		[regex enumerateMatchesInString:path options:NSMatchingReportCompletion range:NSMakeRange(0, path.length)
+			usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+				if (result != nil && *stop != YES) {
+					for (NSUInteger i = 0; i <= regex.numberOfCaptureGroups; i++) {
+						[captures addObject:[path substringWithRange:[result rangeAtIndex:i]]];
+					}
+				}
+			}];
 		if ([captures count] < 1)
 			continue;
 
