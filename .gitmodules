@@ -1,0 +1,3 @@
+[submodule "External/CocoaHTTPServer"]
+	path = External/CocoaHTTPServer
+	url = https://code.google.com/p/cocoahttpserver/
