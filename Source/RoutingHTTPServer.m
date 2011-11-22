@@ -220,29 +220,22 @@
 		return nil;
 
 	for (Route *route in methodRoutes) {
-		// The first element in the captures array is all of the text matched by the regex.
-		// If there is nothing in the array the regex did not match.
-		NSMutableArray *captures = [NSMutableArray array];
-		[route.regex enumerateMatchesInString:path options:NSMatchingReportCompletion range:NSMakeRange(0, path.length)
-			usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-				if (result != nil && *stop != YES) {
-					for (NSUInteger i = 0; i <= route.regex.numberOfCaptureGroups; i++) {
-						[captures addObject:[path substringWithRange:[result rangeAtIndex:i]]];
-					}
-				}
-			}];
-		if ([captures count] < 1)
+		NSTextCheckingResult *result = [route.regex firstMatchInString:path options:0 range:NSMakeRange(0, path.length)];
+		if (!result)
 			continue;
+
+		// The first range is all of the text matched by the regex.
+		NSUInteger captureCount = [result numberOfRanges];
 
 		if (route.keys) {
 			// Add the route's parameters to the parameter dictionary, accounting for
-			// the first element containing the matched text.
-			if ([captures count] == [route.keys count] + 1) {
+			// the first range containing the matched text.
+			if (captureCount == [route.keys count] + 1) {
 				NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
 				NSUInteger index = 1;
 				BOOL firstWildcard = YES;
 				for (NSString *key in route.keys) {
-					NSString *capture = [captures objectAtIndex:index];
+					NSString *capture = [path substringWithRange:[result rangeAtIndex:index]];
 					if ([key isEqualToString:@"wildcards"]) {
 						NSMutableArray *wildcards = [newParams objectForKey:key];
 						if (firstWildcard) {
@@ -259,10 +252,14 @@
 				}
 				params = newParams;
 			}
-		} else if ([captures count] > 1) {
+		} else if (captureCount > 1) {
 			// For custom regular expressions place the anonymous captures in the captures parameter
 			NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
-			[newParams setObject:[captures subarrayWithRange:NSMakeRange(1, [captures count] - 1)] forKey:@"captures"];
+			NSMutableArray *captures = [NSMutableArray array];
+			for (NSUInteger i = 1; i < captureCount; i++) {
+				[captures addObject:[path substringWithRange:[result rangeAtIndex:i]]];
+			}
+			[newParams setObject:captures forKey:@"captures"];
 			params = newParams;
 		}
 
