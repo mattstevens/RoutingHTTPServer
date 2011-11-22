@@ -194,7 +194,7 @@
 		path = [NSString stringWithFormat:@"^%@$", path_];
 	}
 
-	route.path = path;
+	route.regex = [NSRegularExpression regularExpressionWithPattern:path options:NSRegularExpressionCaseInsensitive error:nil];
 	if ([keys count] > 0) {
 		route.keys = keys;
 	}
@@ -222,12 +222,11 @@
 	for (Route *route in methodRoutes) {
 		// The first element in the captures array is all of the text matched by the regex.
 		// If there is nothing in the array the regex did not match.
-		NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:route.path options:NSRegularExpressionCaseInsensitive error:nil];
 		NSMutableArray *captures = [NSMutableArray array];
-		[regex enumerateMatchesInString:path options:NSMatchingReportCompletion range:NSMakeRange(0, path.length)
+		[route.regex enumerateMatchesInString:path options:NSMatchingReportCompletion range:NSMakeRange(0, path.length)
 			usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
 				if (result != nil && *stop != YES) {
-					for (NSUInteger i = 0; i <= regex.numberOfCaptureGroups; i++) {
+					for (NSUInteger i = 0; i <= route.regex.numberOfCaptureGroups; i++) {
 						[captures addObject:[path substringWithRange:[result rangeAtIndex:i]]];
 					}
 				}

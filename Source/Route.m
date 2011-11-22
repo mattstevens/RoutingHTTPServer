@@ -3,14 +3,14 @@
 
 @implementation Route
 
-@synthesize path;
+@synthesize regex;
 @synthesize handler;
 @synthesize target;
 @synthesize selector;
 @synthesize keys;
 
 - (void)dealloc {
-	self.path = nil;
+	self.regex = nil;
 	self.keys = nil;
 	self.handler = nil;
 	[super dealloc];
