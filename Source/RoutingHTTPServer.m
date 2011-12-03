@@ -167,31 +167,28 @@
 		regex = [NSRegularExpression regularExpressionWithPattern:@"(:(\\w+)|\\*)"
 														  options:0
 															error:nil];
-		NSMutableString *path_ = [NSMutableString stringWithString:path];
+		NSMutableString *regexPath = [NSMutableString stringWithString:path];
 		__block NSInteger diff = 0;
-		[regex enumerateMatchesInString:path options:NSMatchingReportCompletion range:NSMakeRange(0, path.length)
+		[regex enumerateMatchesInString:path options:0 range:NSMakeRange(0, path.length)
 			usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-				if (result != nil && *stop != YES) {
-					NSString *capturedString = [path substringWithRange:result.range];
-					if ([capturedString isEqualToString:@"*"]) {
-						[keys addObject:@"wildcards"];
-						NSRange capturedRange = NSMakeRange(diff + result.range.location, result.range.length);
-						NSString *replacementString = @"(.*?)";
-						[path_ replaceCharactersInRange:capturedRange withString:replacementString];
-						diff += replacementString.length - result.range.length;
-					}
-					else {
-						NSString *keyString = [path substringWithRange:NSMakeRange(result.range.location + 1, result.range.length - 1)];
-						[keys addObject:keyString];
-						NSRange capturedRange = NSMakeRange(diff + result.range.location, result.range.length);
-						NSString *replacementString = @"([^/]+)";
-						[path_ replaceCharactersInRange:capturedRange withString:replacementString];
-						diff += replacementString.length - result.range.length;
-					}
+				NSRange replacementRange = NSMakeRange(diff + result.range.location, result.range.length);
+				NSString *replacementString;
+
+				NSString *capturedString = [path substringWithRange:result.range];
+				if ([capturedString isEqualToString:@"*"]) {
+					[keys addObject:@"wildcards"];
+					replacementString = @"(.*?)";
+				} else {
+					NSString *keyString = [path substringWithRange:[result rangeAtIndex:2]];
+					[keys addObject:keyString];
+					replacementString = @"([^/]+)";
 				}
+
+				[regexPath replaceCharactersInRange:replacementRange withString:replacementString];
+				diff += replacementString.length - result.range.length;
 			}];
 
-		path = [NSString stringWithFormat:@"^%@$", path_];
+		path = [NSString stringWithFormat:@"^%@$", regexPath];
 	}
 
 	route.regex = [NSRegularExpression regularExpressionWithPattern:path options:NSRegularExpressionCaseInsensitive error:nil];
