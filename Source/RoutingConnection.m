@@ -38,7 +38,7 @@
 	return YES;
 }
 
-- (void)processDataChunk:(NSData *)postDataChunk {
+- (void)processBodyData:(NSData *)postDataChunk {
 	BOOL result = [request appendData:postDataChunk];
 	if (!result) {
 		// TODO: Log
