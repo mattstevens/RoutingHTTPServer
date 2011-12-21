@@ -50,6 +50,12 @@
 									 [[request param:@"captures"] objectAtIndex:0]]];
 	}];
 
+	[http post:@"/widgets" withBlock:^(RouteRequest *request, RouteResponse *response) {
+		// Create a new widget, [request body] contains the POST body data.
+		// For this example we're just going to echo it back.
+		[response respondWithData:[request body]];
+	}];
+
 	// Routes can also be handled through selectors
 	[http handleMethod:@"GET" withPath:@"/selector" target:self selector:@selector(handleSelectorRequest:withResponse:)];
 }
