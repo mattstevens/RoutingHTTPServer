@@ -1,10 +1,10 @@
 # RoutingHTTPServer
 
-Adds a Sinatra-inspired routing API on top of [CocoaHTTPServer](http://code.google.com/p/cocoahttpserver/).
+Adds a Sinatra-inspired routing API on top of [CocoaHTTPServer](https://github.com/robbiehanson/CocoaHTTPServer).
 
 ## Installation
 
- 1. Add [CocoaHTTPServer](http://code.google.com/p/cocoahttpserver/) to your project
+ 1. Add [CocoaHTTPServer](https://github.com/robbiehanson/CocoaHTTPServer) to your project
  2. Add the files in the Source directory
 
 ## Usage
