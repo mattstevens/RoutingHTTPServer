@@ -3,7 +3,6 @@
 #import "RouteRequest.h"
 #import "RouteResponse.h"
 
-
 @interface RoutingHTTPServer : HTTPServer {
 	NSMutableDictionary *routes;
 	NSMutableDictionary *defaultHeaders;

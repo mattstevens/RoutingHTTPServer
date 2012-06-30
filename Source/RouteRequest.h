@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 @class HTTPMessage;
 
-
 @interface RouteRequest : NSObject {
 	NSDictionary *params;
 	HTTPMessage *message;

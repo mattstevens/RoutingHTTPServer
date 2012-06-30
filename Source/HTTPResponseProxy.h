@@ -8,7 +8,7 @@
 	NSInteger status;
 }
 
-@property (nonatomic, retain) NSObject<HTTPResponse> *response;
+@property (nonatomic) NSObject<HTTPResponse> *response;
 @property (nonatomic) NSInteger status;
 
 - (NSInteger)customStatus;

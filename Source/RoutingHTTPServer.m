@@ -28,24 +28,14 @@
 	if (routeQueue)
 		dispatch_release(routeQueue);
 
-	[routes release];
-	[defaultHeaders release];
-	[mimeTypes release];
-	[super dealloc];
 }
 
 - (void)setDefaultHeaders:(NSDictionary *)headers {
-	NSMutableDictionary *newHeaders;
 	if (headers) {
-		newHeaders = [headers mutableCopy];
+		defaultHeaders = [headers mutableCopy];
 	} else {
-		newHeaders = [[NSMutableDictionary alloc] init];
+		defaultHeaders = [[NSMutableDictionary alloc] init];
 	}
-
-	if (defaultHeaders) {
-		[defaultHeaders release];
-	}
-	defaultHeaders = newHeaders;
 }
 
 - (void)setDefaultHeader:(NSString *)field value:(NSString *)value {
@@ -78,7 +68,6 @@
 		newTypes = [[NSMutableDictionary alloc] init];
 	}
 
-	[mimeTypes release];
 	mimeTypes = newTypes;
 }
 
@@ -150,7 +139,7 @@
 }
 
 - (Route *)routeWithPath:(NSString *)path {
-	Route *route = [[[Route alloc] init] autorelease];
+	Route *route = [[Route alloc] init];
 	NSMutableArray *keys = [NSMutableArray array];
 
 	if ([path length] > 2 && [path characterAtIndex:0] == '{') {
@@ -207,7 +196,10 @@
 	if (route.handler) {
 		route.handler(request, response);
 	} else {
+		#pragma clang diagnostic push
+		#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 		[route.target performSelector:route.selector withObject:request withObject:response];
+		#pragma clang diagnostic pop
 	}
 }
 
@@ -228,7 +220,7 @@
 			// Add the route's parameters to the parameter dictionary, accounting for
 			// the first range containing the matched text.
 			if (captureCount == [route.keys count] + 1) {
-				NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
+				NSMutableDictionary *newParams = [params mutableCopy];
 				NSUInteger index = 1;
 				BOOL firstWildcard = YES;
 				for (NSString *key in route.keys) {
@@ -251,7 +243,7 @@
 			}
 		} else if (captureCount > 1) {
 			// For custom regular expressions place the anonymous captures in the captures parameter
-			NSMutableDictionary *newParams = [[params mutableCopy] autorelease];
+			NSMutableDictionary *newParams = [params mutableCopy];
 			NSMutableArray *captures = [NSMutableArray array];
 			for (NSUInteger i = 1; i < captureCount; i++) {
 				[captures addObject:[path substringWithRange:[result rangeAtIndex:i]]];
@@ -260,17 +252,17 @@
 			params = newParams;
 		}
 
-		RouteRequest *request = [[[RouteRequest alloc] initWithHTTPMessage:httpMessage parameters:params] autorelease];
-		RouteResponse *response = [[[RouteResponse alloc] initWithConnection:connection] autorelease];
+		RouteRequest *request = [[RouteRequest alloc] initWithHTTPMessage:httpMessage parameters:params];
+		RouteResponse *response = [[RouteResponse alloc] initWithConnection:connection];
 		if (!routeQueue) {
 			[self handleRoute:route withRequest:request response:response];
 		} else {
 			// Process the route on the specified queue
-			__block RoutingHTTPServer *blockSelf = self;
+			__weak RoutingHTTPServer *blockSelf = self;
 			dispatch_sync(routeQueue, ^{
-				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-				[blockSelf handleRoute:route withRequest:request response:response];
-				[pool drain];
+				@autoreleasepool {
+					[blockSelf handleRoute:route withRequest:request response:response];
+				}
 			});
 		}
 		return response;

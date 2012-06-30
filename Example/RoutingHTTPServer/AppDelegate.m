@@ -13,7 +13,7 @@
 @synthesize http;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-	self.http = [[[RoutingHTTPServer alloc] init] autorelease];
+	self.http = [[RoutingHTTPServer alloc] init];
 
 	// Set a default Server header in the form of YourApp/1.0
 	NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];

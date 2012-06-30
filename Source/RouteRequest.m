@@ -1,23 +1,16 @@
 #import "RouteRequest.h"
 #import "HTTPMessage.h"
 
-
 @implementation RouteRequest
 
 @synthesize params;
 
 - (id)initWithHTTPMessage:(HTTPMessage *)msg parameters:(NSDictionary *)parameters {
 	if (self = [super init]) {
-		params = [parameters retain];
-		message = [msg retain];
+		params = parameters;
+		message = msg;
 	}
 	return self;
-}
-
-- (void)dealloc {
-	[params release];
-	[message release];
-	[super dealloc];
 }
 
 - (NSDictionary *)headers {
@@ -46,7 +39,7 @@
 
 - (NSString *)description {
 	NSData *data = [message messageData];
-	return [[[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding] autorelease];
+	return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
 
 @end

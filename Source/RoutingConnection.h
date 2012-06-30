@@ -3,7 +3,7 @@
 @class RoutingHTTPServer;
 
 @interface RoutingConnection : HTTPConnection {
-	RoutingHTTPServer *http;
+	__weak RoutingHTTPServer *http;
 	NSDictionary *headers;
 }
 

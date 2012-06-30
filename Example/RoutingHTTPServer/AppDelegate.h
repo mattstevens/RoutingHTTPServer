@@ -3,8 +3,8 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
-@property (retain) RoutingHTTPServer *http;
+@property (strong) IBOutlet NSWindow *window;
+@property (strong) RoutingHTTPServer *http;
 
 - (void)setupRoutes;
 

@@ -328,7 +328,7 @@
 		C99CEC7C147959C200F648A5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = C99CEC7F147959C200F648A5 /* Build configuration list for PBXProject "RoutingHTTPServer" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -518,6 +518,7 @@
 		C99CECB8147959C300F648A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RoutingHTTPServer/RoutingHTTPServer-Prefix.pch";
 				INFOPLIST_FILE = "RoutingHTTPServer/RoutingHTTPServer-Info.plist";
@@ -529,6 +530,7 @@
 		C99CECB9147959C300F648A5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RoutingHTTPServer/RoutingHTTPServer-Prefix.pch";
 				INFOPLIST_FILE = "RoutingHTTPServer/RoutingHTTPServer-Info.plist";
@@ -541,6 +543,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/RoutingHTTPServer.app/Contents/MacOS/RoutingHTTPServer";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RoutingHTTPServer/RoutingHTTPServer-Prefix.pch";
@@ -555,6 +558,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/RoutingHTTPServer.app/Contents/MacOS/RoutingHTTPServer";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RoutingHTTPServer/RoutingHTTPServer-Prefix.pch";

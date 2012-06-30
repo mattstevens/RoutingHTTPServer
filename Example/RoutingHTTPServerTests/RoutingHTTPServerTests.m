@@ -22,14 +22,13 @@
 }
 
 - (void)tearDown {
-	[http release];
 	[super tearDown];
 }
 
 - (void)testRoutes {
 	RouteResponse *response;
 	NSDictionary *params = [NSDictionary dictionary];
-	HTTPMessage *request = [[[HTTPMessage alloc] initEmptyRequest] autorelease];
+	HTTPMessage *request = [[HTTPMessage alloc] initEmptyRequest];
 
 	response = [http routeMethod:@"GET" withPath:@"/null" parameters:params request:request connection:nil];
 	STAssertNil(response, @"Received response for path that does not exist");
@@ -105,7 +104,7 @@
 
 	[http post:@"/xml" withBlock:^(RouteRequest *request, RouteResponse *response) {
 		NSData *bodyData = [request body];
-		NSString *xml = [[[NSString alloc] initWithBytes:[bodyData bytes] length:[bodyData length] encoding:NSUTF8StringEncoding] autorelease];
+		NSString *xml = [[NSString alloc] initWithBytes:[bodyData bytes] length:[bodyData length] encoding:NSUTF8StringEncoding];
 
 		// Green?
 		NSRange tagRange = [xml rangeOfString:@"<greenLevel>"];
@@ -127,21 +126,21 @@
 - (void)verifyRouteWithMethod:(NSString *)method path:(NSString *)path {
 	RouteResponse *response;
 	NSDictionary *params = [NSDictionary dictionary];
-	HTTPMessage *request = [[[HTTPMessage alloc] initEmptyRequest] autorelease];
+	HTTPMessage *request = [[HTTPMessage alloc] initEmptyRequest];
 
 	response = [http routeMethod:method withPath:path parameters:params request:request connection:nil];
 	STAssertNotNil(response.proxiedResponse, @"Proxied response is nil for %@ %@", method, path);
 
 	NSUInteger length = [response.proxiedResponse contentLength];
 	NSData *data = [response.proxiedResponse readDataOfLength:length];
-	NSString *responseString = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+	NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	STAssertEqualObjects(responseString, path, @"Unexpected response for %@ %@", method, path);
 }
 
 - (void)verifyRouteNotFoundWithMethod:(NSString *)method path:(NSString *)path {
 	RouteResponse *response;
 	NSDictionary *params = [NSDictionary dictionary];
-	HTTPMessage *request = [[[HTTPMessage alloc] initEmptyRequest] autorelease];
+	HTTPMessage *request = [[HTTPMessage alloc] initEmptyRequest];
 
 	response = [http routeMethod:method withPath:path parameters:params request:request connection:nil];
 	STAssertNil(response, @"Response should have been nil for %@ %@", method, path);
@@ -172,7 +171,7 @@
 	httpResponse = (NSHTTPURLResponse *)response;
 	STAssertEquals([httpResponse statusCode], 200L, @"Unexpected status code for %@ %@", method, path);
 
-	NSString *responseString = [[[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding] autorelease];
+	NSString *responseString = [[NSString alloc] initWithBytes:[responseData bytes] length:[responseData length] encoding:NSUTF8StringEncoding];
 	STAssertEqualObjects(responseString, expectedResponseString, @"Unexpected response for %@ %@", method, path);
 }
 
