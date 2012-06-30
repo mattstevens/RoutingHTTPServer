@@ -1,7 +1,9 @@
 #import "RouteRequest.h"
 #import "HTTPMessage.h"
 
-@implementation RouteRequest
+@implementation RouteRequest {
+	HTTPMessage *message;
+}
 
 @synthesize params;
 

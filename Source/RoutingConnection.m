@@ -3,7 +3,10 @@
 #import "HTTPMessage.h"
 #import "HTTPResponseProxy.h"
 
-@implementation RoutingConnection
+@implementation RoutingConnection {
+	__weak RoutingHTTPServer *http;
+	NSDictionary *headers;
+}
 
 - (id)initWithAsyncSocket:(GCDAsyncSocket *)newSocket configuration:(HTTPConfig *)aConfig {
 	if (self = [super initWithAsyncSocket:newSocket configuration:aConfig]) {

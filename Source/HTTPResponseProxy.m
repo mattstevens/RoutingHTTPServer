@@ -3,6 +3,7 @@
 @implementation HTTPResponseProxy
 
 @synthesize response;
+@synthesize status;
 
 - (NSInteger)status {
 	if (status != 0) {

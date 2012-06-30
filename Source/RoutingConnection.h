@@ -2,9 +2,5 @@
 #import "HTTPConnection.h"
 @class RoutingHTTPServer;
 
-@interface RoutingConnection : HTTPConnection {
-	__weak RoutingHTTPServer *http;
-	NSDictionary *headers;
-}
-
+@interface RoutingConnection : HTTPConnection
 @end

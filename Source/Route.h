@@ -1,13 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "RoutingHTTPServer.h"
 
-@interface Route : NSObject {
-	NSRegularExpression *regex;
-	RequestHandler handler;
-	__weak id target;
-	SEL selector;
-	NSArray *keys;
-}
+@interface Route : NSObject
 
 @property (nonatomic) NSRegularExpression *regex;
 @property (nonatomic, copy) RequestHandler handler;

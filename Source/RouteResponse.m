@@ -5,7 +5,10 @@
 #import "HTTPAsyncFileResponse.h"
 #import "HTTPResponseProxy.h"
 
-@implementation RouteResponse
+@implementation RouteResponse {
+	NSMutableDictionary *headers;
+	HTTPResponseProxy *proxy;
+}
 
 @synthesize connection;
 @synthesize headers;

@@ -2,15 +2,12 @@
 #import "RoutingConnection.h"
 #import "Route.h"
 
-@interface RoutingHTTPServer ()
-
-- (Route *)routeWithPath:(NSString *)path;
-- (void)addRoute:(Route *)route forMethod:(NSString *)method;
-- (void)setupMIMETypes;
-
-@end
-
-@implementation RoutingHTTPServer
+@implementation RoutingHTTPServer {
+	NSMutableDictionary *routes;
+	NSMutableDictionary *defaultHeaders;
+	NSMutableDictionary *mimeTypes;
+	dispatch_queue_t routeQueue;
+}
 
 @synthesize defaultHeaders;
 
@@ -27,7 +24,6 @@
 - (void)dealloc {
 	if (routeQueue)
 		dispatch_release(routeQueue);
-
 }
 
 - (void)setDefaultHeaders:(NSDictionary *)headers {

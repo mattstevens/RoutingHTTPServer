@@ -1,10 +1,7 @@
 #import <Foundation/Foundation.h>
 @class HTTPMessage;
 
-@interface RouteRequest : NSObject {
-	NSDictionary *params;
-	HTTPMessage *message;
-}
+@interface RouteRequest : NSObject
 
 @property (nonatomic, readonly) NSDictionary *headers;
 @property (nonatomic, readonly) NSDictionary *params;
