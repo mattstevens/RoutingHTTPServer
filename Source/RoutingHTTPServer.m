@@ -21,10 +21,12 @@
 	return self;
 }
 
+#if !OS_OBJECT_USE_OBJC_RETAIN_RELEASE
 - (void)dealloc {
 	if (routeQueue)
 		dispatch_release(routeQueue);
 }
+#endif
 
 - (void)setDefaultHeaders:(NSDictionary *)headers {
 	if (headers) {
@@ -43,11 +45,13 @@
 }
 
 - (void)setRouteQueue:(dispatch_queue_t)queue {
+#if !OS_OBJECT_USE_OBJC_RETAIN_RELEASE
 	if (queue)
 		dispatch_retain(queue);
 
 	if (routeQueue)
 		dispatch_release(routeQueue);
+#endif
 
 	routeQueue = queue;
 }
