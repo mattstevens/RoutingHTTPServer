@@ -258,10 +258,9 @@
 			[self handleRoute:route withRequest:request response:response];
 		} else {
 			// Process the route on the specified queue
-			__weak RoutingHTTPServer *blockSelf = self;
 			dispatch_sync(routeQueue, ^{
 				@autoreleasepool {
-					[blockSelf handleRoute:route withRequest:request response:response];
+					[self handleRoute:route withRequest:request response:response];
 				}
 			});
 		}
