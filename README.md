@@ -2,6 +2,8 @@
 
 Adds a Sinatra-inspired routing API on top of [CocoaHTTPServer](https://github.com/robbiehanson/CocoaHTTPServer).
 
+Supports iOS 4+ and OS X 10.7+
+
 ## Installation
 
  1. Add [CocoaHTTPServer](https://github.com/robbiehanson/CocoaHTTPServer) to your project
@@ -49,7 +51,7 @@ Routes can also be handled with selectors:
         [response respondWithString:@"Hello!"];
     }
 
-The RouteRequest and RouteResponse headers show what's available through these objects. Responses can respond with an NSString or NSData object, a path to a file, or an existing HTTPResponse class. Responses can also be empty as long as a status code or custom header is set. For example, to perform a redirect:
+RouteResponses can respond with an NSString or NSData object, a path to a file, or an existing HTTPResponse class. Responses can also be empty as long as a status code or custom header is set. For example, to perform a redirect:
 
     [http get:@"/old" withBlock:^(RouteRequest *request, RouteResponse *response) {
         [response setStatusCode:302]; // or 301
