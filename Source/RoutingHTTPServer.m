@@ -99,14 +99,6 @@
 	[self handleMethod:@"DELETE" withPath:path block:block];
 }
 
-- (void)subscribe:(NSString *)path withBlock:(RequestHandler)block {
-	[self handleMethod:@"SUBSCRIBE" withPath:path block:block];
-}
-
-- (void)unsubscribe:(NSString *)path withBlock:(RequestHandler)block {
-	[self handleMethod:@"UNSUBSCRIBE" withPath:path block:block];
-}
-
 - (void)handleMethod:(NSString *)method withPath:(NSString *)path block:(RequestHandler)block {
 	Route *route = [self routeWithPath:path];
 	route.handler = block;

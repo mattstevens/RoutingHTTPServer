@@ -33,8 +33,6 @@ typedef void (^RequestHandler)(RouteRequest *request, RouteResponse *response);
 - (void)post:(NSString *)path withBlock:(RequestHandler)block;
 - (void)put:(NSString *)path withBlock:(RequestHandler)block;
 - (void)delete:(NSString *)path withBlock:(RequestHandler)block;
-- (void)subscribe:(NSString *)path withBlock:(RequestHandler)block;
-- (void)unsubscribe:(NSString *)path withBlock:(RequestHandler)block;
 
 - (void)handleMethod:(NSString *)method withPath:(NSString *)path block:(RequestHandler)block;
 - (void)handleMethod:(NSString *)method withPath:(NSString *)path target:(id)target selector:(SEL)selector;
